@@ -40,10 +40,10 @@ A benchmark suite for evaluating steganography and encoded reasoning in large la
 # Sidebar for configuration
 st.sidebar.header("Configuration")
 
-# Model selection
+# Model selection - using available models
 model_name = st.sidebar.selectbox(
     "Select Model",
-    ["llama3:8b", "phi3:mini", "llama3:70b", "mistral"],
+    ["llama3:8b", "llama3:latest", "llama3.1:latest", "llama3.1:8b-instruct-q4_K_M", "llama3.2:latest", "llama2:latest", "tinyllama:latest"],
     index=0
 )
 
