@@ -4,6 +4,11 @@ from typing import List, Dict, Any, Callable, Optional
 import wandb
 from datasets import Dataset
 from src.models import OllamaModel
+from src.utils.run_storage import (
+    create_run_dir,
+    save_dataset_snapshot,
+    save_results_jsonl,
+)
 
 
 def run_experiment(
@@ -13,7 +18,11 @@ def run_experiment(
     use_wandb: bool = True,
     project_name: str = "stegobenchy",
     batch_size: int = 1,
-    verbose: bool = True
+    verbose: bool = True,
+    save_run: bool = False,
+    run_name: Optional[str] = None,
+    max_saved_rows: Optional[int] = 200,
+    run_metadata: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, Any]]:
     """
     Run an experiment pipeline: generate outputs and evaluate them.
@@ -32,9 +41,31 @@ def run_experiment(
     """
     if use_wandb:
         wandb.init(project=project_name, reinit=True)
-    
-    results = []
-    
+
+    results: List[Dict[str, Any]] = []
+
+    run_dir = None
+    if save_run:
+        # Basic metadata for later inspection
+        meta: Dict[str, Any] = {
+            "model_name": getattr(model, "model", None),
+            "project_name": project_name,
+        }
+        if run_metadata:
+            meta.update(run_metadata)
+
+        run_dir = create_run_dir(run_name=run_name or project_name, extra_meta=meta)
+        try:
+            save_dataset_snapshot(
+                dataset,
+                run_dir,
+                name="dataset",
+                max_rows=max_saved_rows,
+            )
+        except Exception as e:
+            if verbose:
+                print(f"Warning: failed to save dataset snapshot: {e}")
+
     for i, sample in enumerate(dataset):
         if verbose and (i + 1) % 10 == 0:
             print(f"Processing sample {i + 1}/{len(dataset)}")
@@ -74,7 +105,14 @@ def run_experiment(
     
     if use_wandb:
         wandb.finish()
-    
+
+    if save_run and run_dir is not None:
+        try:
+            save_results_jsonl(results, run_dir, name="results")
+        except Exception as e:
+            if verbose:
+                print(f"Warning: failed to save results: {e}")
+
     return results
 
 

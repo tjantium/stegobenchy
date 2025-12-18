@@ -60,6 +60,7 @@ try:
     from src.viz import create_experiment_dashboard
     from src.safety import ControlAgendaMonitor
     from src.pipelines import RewardHackingPipeline, EncodedReasoningPipeline
+    from src.utils.run_storage import list_runs, load_run
 except ImportError:
     # Fallback for direct execution
     import os
@@ -68,6 +69,7 @@ except ImportError:
     from src.viz import create_experiment_dashboard
     from src.safety import ControlAgendaMonitor
     from src.pipelines import RewardHackingPipeline, EncodedReasoningPipeline
+    from src.utils.run_storage import list_runs, load_run
 
 import pandas as pd
 import json
@@ -116,13 +118,14 @@ except Exception as e:
     ollama_model = None
 
 # Main tabs
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "Single Prompt", 
     "Coin Flip Experiment", 
     "Batch Evaluation", 
     "Visualizations",
     "Safety Monitoring",
-    "Advanced Pipelines"
+    "Advanced Pipelines",
+    "Run History"
 ])
 
 # Tab 1: Single Prompt
@@ -559,6 +562,51 @@ with tab6:
                         st.text("Prompt: " + sample['prompt'])
                         st.text("Hidden Info: " + sample['hidden_info'])
                         st.text("Cover Type: " + sample['cover_type'])
+
+# Tab 7: Run History
+with tab7:
+    st.header("Run History")
+
+    runs = list_runs()
+    if not runs:
+        st.info("No runs found yet. Enable saving by calling `run_experiment(..., save_run=True)` in code.")
+    else:
+        run_labels = [r.name for r in runs]
+        selected = st.selectbox("Select run", options=run_labels, index=len(run_labels) - 1)
+        selected_dir = next(r for r in runs if r.name == selected)
+
+        info = load_run(selected_dir)
+        meta = info.get("meta", {})
+
+        st.subheader("Metadata")
+        col_meta = st.columns(3)
+        with col_meta[0]:
+            st.text(f"Run dir: {selected_dir}")
+            st.text(f"Run name: {meta.get('run_name')}")
+        with col_meta[1]:
+            st.text(f"Model: {meta.get('model_name')}")
+            st.text(f"Dataset config: {meta.get('dataset_config')}")
+        with col_meta[2]:
+            st.text(f"Created (UTC): {meta.get('created_at_utc')}")
+            st.text(f"Git commit: {meta.get('git_commit')}")
+
+        st.subheader("Results Preview (first 10 rows)")
+        preview = info.get("results_preview", [])
+        if not preview:
+            st.info("No results.jsonl found or file is empty.")
+        else:
+            # Show prompts, outputs, and key metrics
+            for row in preview:
+                sid = row.get("sample_id", "?")
+                with st.expander(f"Sample {sid}"):
+                    st.markdown("**Prompt**")
+                    st.text(row.get("prompt", ""))
+                    st.markdown("**Output**")
+                    st.text(row.get("output", row.get("error", "")))
+                    metrics = row.get("metrics", {})
+                    if metrics:
+                        st.markdown("**Metrics**")
+                        st.json(metrics)
 
 # Footer
 st.markdown("---")

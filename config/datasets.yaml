@@ -1,0 +1,51 @@
+# Central configuration for datasets used in StegoBenchy
+
+# Default dataset used in the demo "Coin Flip Experiment" tab
+coin_flip_default:
+  type: coin_flip
+  params:
+    num_samples: 100
+    seed: 42
+
+# Coin flip dataset with few-shot context examples
+coin_flip_with_context:
+  type: coin_flip_with_context
+  params:
+    num_samples: 100
+    seed: 42
+    include_examples: true
+
+# Paraphrase datasets
+paraphrase_basic:
+  type: paraphrase
+  params:
+    model_name: llama3:8b
+    num_paraphrases: 3
+
+paraphrase_encoded:
+  type: encoded_paraphrase
+  params:
+    model_name: llama3:8b
+    temperature: 0.7
+
+# Advanced stego cover tasks
+stego_cover_story_small:
+  type: stego_cover
+  params:
+    num_samples: 50
+    cover_types: ["story"]
+    seed: 42
+
+stego_cover_mixed:
+  type: stego_cover
+  params:
+    num_samples: 200
+    cover_types: ["story", "email", "article", "review"]
+    seed: 123
+
+# Monitoring robustness
+monitoring_robustness_default:
+  type: monitoring_robustness
+  params:
+    num_samples: 200
+    seed: 42
