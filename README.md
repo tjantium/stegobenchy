@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![codecov](https://codecov.io/gh/tjantium/stegobenchy/branch/main/graph/badge.svg)](https://codecov.io/gh/tjantium/stegobenchy)
 
 A benchmark suite for evaluating **steganography** and **encoded reasoning** in large language models (LLMs). StegoBenchy provides modular experiment pipelines, datasets, finetuning workflows, interpretability tools, and interactive visualizations to study how models encode hidden information in their reasoning.
 
