@@ -1,0 +1,77 @@
+site_name: StegoBenchy Documentation
+site_description: A benchmark suite for evaluating steganography and encoded reasoning in LLMs
+site_url: https://tjantium.github.io/stegobenchy/
+repo_name: tjantium/stegobenchy
+repo_url: https://github.com/tjantium/stegobenchy
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.annotate
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+  - User Guide:
+    - Models: user-guide/models.md
+    - Datasets: user-guide/datasets.md
+    - Pipelines: user-guide/pipelines.md
+    - Evaluation: user-guide/evaluation.md
+    - Visualization: user-guide/visualization.md
+  - Advanced:
+    - Architecture: advanced/architecture.md
+    - Advanced Features: advanced/features.md
+    - Interpretability: advanced/interpretability.md
+  - Contributing: contributing.md
+  - API Reference:
+    - Models: api/models.md
+    - Datasets: api/datasets.md
+    - Pipelines: api/pipelines.md
+    - Evaluation: api/evaluation.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+
