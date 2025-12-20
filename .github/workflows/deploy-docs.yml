@@ -37,7 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install mkdocs mkdocs-material
+          pip install mkdocs mkdocs-material mkdocstrings[python] pymdown-extensions
 
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force
