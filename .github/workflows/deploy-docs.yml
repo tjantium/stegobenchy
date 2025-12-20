@@ -38,6 +38,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install mkdocs mkdocs-material mkdocstrings[python] pymdown-extensions
+          # Install package so mkdocstrings can import modules
+          pip install -e .
 
       - name: Deploy to GitHub Pages
         run: mkdocs gh-deploy --force
